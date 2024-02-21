@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "types": ["node", "jest", "express", "multer"],
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    // "verbatimModuleSyntax": true,
+    "outDir": "./dist",
+    "skipDefaultLibCheck": true,
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strict": true,
+    "strictBindCallApply": false,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    "moduleResolution": "node",
+    "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "pretty": true,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2015.Iterable",
+      "ES2018.AsyncIterable",
+      "ES2015",
+      "ES2017",
+      "ES2018",
+      "ES2019",
+      "ES6",
+      "ESNext"
+    ],
+    "paths": {
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@auth-jwt/*": [
+        "src/modules/auth-jwt/*"
+      ],
+      "@auth-session/*": [
+        "src/modules/auth-session/*"
+      ],
+      "@certificate/*": [
+        "src/modules/certificate/*"
+      ],
+    }
+  }
+}
