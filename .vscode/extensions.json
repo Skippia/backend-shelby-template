@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "aaron-bond.better-comments",
+        "Catppuccin.catppuccin-vsc-icons",
+        "mikestead.dotenv",
+        "usernamehw.errorlens",
+        "dbaeumer.vscode-eslint",
+        "rvest.vs-code-prettier-eslint",
+        "mhutchie.git-graph",
+        "Prisma.prisma",
+    ]
+}
