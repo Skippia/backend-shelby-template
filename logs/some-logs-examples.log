@@ -1,0 +1,36 @@
+### Login via Redis session guard (SessionRedisLoginGuard)
+    - SessionRedisLoginGuard()
+        => SessionRedisStrategy.validate()
+            => SessionRedisSerializer.serializeUser()
+
+{"level":"trace","source":"SessionRedisLoginGuard","timestamp":"2024-02-20T16:49:34+00:00","message":"Call `SessionRedisLoginGuard`","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"trace","source":"SessionRedisStrategy","timestamp":"2024-02-20T16:49:34+00:00","message":"Call `SessionRedisStrategy.validate`","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"info","source":"LoginSessionUsecase","timestamp":"2024-02-20T16:49:34+00:00","message":"try login...","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"trace","source":"AuthSessionRepository","timestamp":"2024-02-20T16:49:34+00:00","message":"[Postgresql]:[findByEmail]: Query was handled with admin@gmail.com","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"trace","source":"SessionRedisSerializer","timestamp":"2024-02-20T16:49:34+00:00","message":"Call `SessionRedisSerializer.serializeUser`","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"http","source":"LoggingInterceptor","timestamp":"2024-02-20T16:49:34+00:00","message":"{\"type\":\"Request args\",\"method\":\"POST\",\"host\":\"localhost\",\"path\":\"/api/v1/auth/session/login\",\"clientIp\":\"172.23.0.1\",\"headers\":{\"host\":\"localhost:3000\",\"user-agent\":\"insomnia/8.6.1\",\"content-type\":\"application/json\",\"accept\":\"*/*\",\"content-length\":\"56\"}}","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"debug","source":"PerformanceInterceptor","timestamp":"2024-02-20T16:49:34+00:00","message":"[Performance]: Duration: 0.00133 s ","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+{"level":"http","source":"LoggingInterceptor","timestamp":"2024-02-20T16:49:34+00:00","message":"{\"type\":\"Response result\",\"duration\":\"4ms\",\"code\":201}","traceId":"a57b7a66-ff95-43ce-9080-7a00f67ddad8"}
+
+## Get some data for protected redis guard (SessionRedisGuard)
+    - SessionRedisSerializer.deserializeUser() (!!!)
+        => SessionRedisGuard
+
+{"level":"trace","source":"SessionRedisSerializer","timestamp":"2024-02-20T16:50:24+00:00","message":"Call `SessionRedisSerializer.deserializeUser`","traceId":"328acc9a-55dc-4e9b-963b-f58b4bc8e6ff"}
+{"level":"trace","source":"SessionRedisGuard","timestamp":"2024-02-20T16:50:24+00:00","message":"Call `SessionRedisGuard`","traceId":"328acc9a-55dc-4e9b-963b-f58b4bc8e6ff"}
+{"level":"http","source":"LoggingInterceptor","timestamp":"2024-02-20T16:50:24+00:00","message":"{\"type\":\"Request args\",\"method\":\"GET\",\"host\":\"localhost\",\"path\":\"/api/v1/auth/session/status\",\"clientIp\":\"172.23.0.1\",\"headers\":{\"host\":\"localhost:3000\",\"user-agent\":\"insomnia/8.6.1\",\"cookie\":\"session_id=s%3Aqc_9fo9SvBpjr3heMbKaHF2ZxNiYVpn3.hG1p0lBDgY8BczsVaLppwFyBwpY9vxoOCE5b2XxFGBU\",\"accept\":\"*/*\"}}","traceId":"328acc9a-55dc-4e9b-963b-f58b4bc8e6ff"}
+{"level":"debug","source":"PerformanceInterceptor","timestamp":"2024-02-20T16:50:24+00:00","message":"[Performance]: Duration: 0.00042 s ","traceId":"328acc9a-55dc-4e9b-963b-f58b4bc8e6ff"}
+{"level":"http","source":"LoggingInterceptor","timestamp":"2024-02-20T16:50:24+00:00","message":"{\"type\":\"Response result\",\"duration\":\"1ms\",\"code\":200}","traceId":"328acc9a-55dc-4e9b-963b-f58b4bc8e6ff"}
+{"level":"trace","source":"AuthSessionRepository","timestamp":"2024-02-20T16:50:24+00:00","message":"[Postgresql]:[findByEmail]: Query was handled with admin@gmail.com","traceId":"328acc9a-55dc-4e9b-963b-f58b4bc8e6ff"}
+
+### Logout from account using session logout endpoint
+    - SessionRedisSerializer.deserializeUser() (!!!)
+        => SessionRedisGuard
+
+{"level":"trace","source":"SessionRedisSerializer","timestamp":"2024-02-20T16:51:24+00:00","message":"Call `SessionRedisSerializer.deserializeUser`","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
+{"level":"trace","source":"SessionRedisGuard","timestamp":"2024-02-20T16:51:24+00:00","message":"Call `SessionRedisGuard`","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
+{"level":"http","source":"LoggingInterceptor","timestamp":"2024-02-20T16:51:24+00:00","message":"{\"type\":\"Request args\",\"method\":\"POST\",\"host\":\"localhost\",\"path\":\"/api/v1/auth/session/logout\",\"clientIp\":\"172.23.0.1\",\"headers\":{\"host\":\"localhost:3000\",\"user-agent\":\"insomnia/8.6.1\",\"cookie\":\"session_id=s%3Aqc_9fo9SvBpjr3heMbKaHF2ZxNiYVpn3.hG1p0lBDgY8BczsVaLppwFyBwpY9vxoOCE5b2XxFGBU\",\"accept\":\"*/*\",\"content-length\":\"0\"}}","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
+{"level":"info","source":"LogoutSessionUsecase","timestamp":"2024-02-20T16:51:24+00:00","message":"try logout...","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
+{"level":"debug","source":"PerformanceInterceptor","timestamp":"2024-02-20T16:51:24+00:00","message":"[Performance]: Duration: 0.00092 s ","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
+{"level":"http","source":"LoggingInterceptor","timestamp":"2024-02-20T16:51:24+00:00","message":"{\"type\":\"Response result\",\"duration\":\"1ms\",\"code\":201}","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
+{"level":"trace","source":"AuthSessionRepository","timestamp":"2024-02-20T16:51:24+00:00","message":"[Postgresql]:[findByEmail]: Query was handled with admin@gmail.com","traceId":"c6c8b6f9-3a63-4fd3-842f-116446a00b51"}
