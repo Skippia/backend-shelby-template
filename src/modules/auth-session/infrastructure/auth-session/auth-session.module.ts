@@ -12,8 +12,6 @@ import { AuthSessionRepositoryModule } from '@auth-session/infrastructure/reposi
 
 import { UsecasesProxyModule } from '@auth-session/application/usecases'
 
-import { AuthSessionService } from './auth-session.service'
-
 @Module({
   imports: [
     PassportModule.register({
@@ -24,22 +22,15 @@ import { AuthSessionService } from './auth-session.service'
   ],
 })
 export class AuthSessionModule {
-  static SERVICE_TOKEN = 'SESSION_SERVICE_TOKEN'
-
   static register(): DynamicModule {
     return {
       module: AuthSessionModule,
       providers: [
-        {
-          provide: AuthSessionModule.SERVICE_TOKEN,
-          useClass: AuthSessionService,
-        },
         SessionRedisGuard,
         SessionRedisLoginGuard,
         SessionRedisStrategy,
         SessionRedisSerializer,
       ],
-      exports: [AuthSessionModule.SERVICE_TOKEN],
     }
   }
 }

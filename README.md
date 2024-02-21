@@ -16,10 +16,14 @@
 
 -   Nest.js
 -   Prisma + Postgresql
+-   Redis (based on ioredis)
 -   Elasticsearch
 -   Winston + Logstash
--   Passport.js, JWT 
+-   Passport.js, JWT, express-session + connect-redis
 -   Nest-access-control (attribute-based access control)
+-   Archiver (creating .zip archives)
+-   Pdfkit
+-   Nodemailer
 -   Zod / Class-validator
 -   Swagger
 -   Eslint & Prettier
@@ -30,29 +34,37 @@
 
 -   [x] Following to clean (onion) architecture
 -   [x] UML diagram class (auth)
--   [ ] UML diagram class (certificate)
--   [x] Account system based on JWT tokens:
+-   [x] Account system based on JWT tokens (with Passport.js):
     -   [x] Signup (with email confirmation), Login, RefreshJwt, CreateRtSession, Logout
     -   [x] Mantaining of multi sessions for one user (based on refresh tokens) + self cleaning of expired sessions (cron job)
     -   [x] Several user roles with appropriate permissions (ABAC)
+-   [x] Account system based on sessions (with Passport.js):
+    -   [x] Login, Logout
+    -   [x] Redis as storage for keeping active sessions
+    -   [x] Manual decorators for login and accessing protected endpoints (based on Passport.js)
 -   [x] Operations for Certificate report (generate .pdf, get (as .pdf / .zip))
 -   [x] Winston logging:
     -   [x] Based on logstash transport implementation (ELK)
     -   [x] Based on file transport implementation
     -   [x] Based on only log-level transport implementation
--   [x] End-to-end logging (via Async Local Storage)
+-   [x] End-to-end logging (via Async Local Storage and traceId)
 -   [x] Dto validation/transformation + Swagger:
     -   [x] Based on Zod
     -   [x] Based on Class-validator   
 -   [x] Save environment variables
+-   [x] Customizable bootstrapping of application (`app.module.ts`)
+-   [x] Intergration tests:
+    -   [x] For Redis, context, promise modules
 -   [x] E2E tests:
-    -   [x] For auth usecases
+    -   [x] For auth usecases (jwt, sessions)
     -   [x] For certificate usecases
--   [x] Eslint & Prettier
--   [ ] Redis based cache system
+    -   [x] For cache module
+-   [x] Redis based cache system (cache wrapper module, cache bucket + invalidating, manual auto-caching decorator)
+-   [x] Custom reliable Eslint & Prettier configs
 -   [x] Seed, creating and restoring backup scripts for database
--   [ ] Stress testing RPC/TPC (with Ddosify)
 -   [x] Dockerization of the application
+-   [ ] Gathering metrics & analytics (Clickhouse(?), Prometheus, Grafana)
+-   [ ] Stress testing RPS/TRPS (with Ddosify)
 -   [ ] CI/CD gitlab
 
 

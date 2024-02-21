@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 
 import { PrismaClient } from '@prisma/db'
 

@@ -11,7 +11,7 @@ import { errorShape, sessionShape } from 'test/helpers/common/shapes'
 
 import { ScheduleModule } from '@nestjs/schedule'
 
-import { createUsers, rawUserInputData, userInputData } from 'test/helpers/create'
+import { createUsers, rawUserInputData } from 'test/helpers/create'
 
 import { PrismaModule } from '@shared/modules/prisma/client'
 import type { PrismaService } from '@shared/modules/prisma/client'

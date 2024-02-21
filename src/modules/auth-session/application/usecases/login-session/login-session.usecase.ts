@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException, forwardRef } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { compareSync } from 'bcrypt'
 
@@ -8,10 +8,6 @@ import type { AuthLoginSessionRequest } from '@auth-session/presenter'
 
 import type { UserEntity } from '@auth-session/domain'
 import { IAuthSessionRepository } from '@auth-session/domain'
-
-import { AuthSessionModule } from '@auth-session/infrastructure/adapters/auth-session'
-
-import { IAuthSessionService } from '@auth-session/application/ports'
 
 import { AuthSessionRepositoryModule } from '@auth-session/infrastructure/repositories'
 
@@ -24,8 +20,6 @@ export class LoginSessionUsecase implements ILoginSessionUsecase {
   constructor(
     @Inject(AuthSessionRepositoryModule.AUTH_SESSION_REPOSITORY_TOKEN)
     readonly authSessionRepository: IAuthSessionRepository<PrismaClient>,
-    @Inject(forwardRef(() => AuthSessionModule.SERVICE_TOKEN))
-    readonly authJwtService: IAuthSessionService,
     @InjectLogger(LoginSessionUsecase.name)
     readonly logger: ILoggerService,
   ) {}

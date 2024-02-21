@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Res,
-  Body,
   Get,
   Inject,
   UseFilters,
@@ -25,11 +24,7 @@ import { ZodValidationPipe } from '@anatine/zod-nestjs'
 
 import { SessionRedisGuard, SessionRedisLoginGuard } from '@auth-session/infrastructure/guards'
 
-import {
-  ILoginSessionUsecase,
-  ILogoutSessionUsecase,
-  UsecasesProxyModule,
-} from '@auth-session/application/usecases'
+import { ILogoutSessionUsecase, UsecasesProxyModule } from '@auth-session/application/usecases'
 
 import { PrismaExceptionFilter } from '@shared/filters'
 

@@ -37,8 +37,6 @@ import passport from 'passport'
 
 import type { Redis } from 'ioredis'
 
-import type { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface'
-
 import { AllExceptionFilter } from '@shared/filters'
 
 import { LoggingInterceptor } from '@shared/modules/logger'
@@ -256,7 +254,6 @@ export class AppModule {
       }),
     )
 
-    // TODO: why?
     expressInstance.use(passport.initialize())
     expressInstance.use(passport.session())
 
