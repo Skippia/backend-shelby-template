@@ -1,0 +1,168 @@
+version: '3.8'
+services:
+  # Backend API
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
+    container_name: nmt-app
+    restart: always
+    links:
+      - db
+      # - elasticsearch
+      - redis
+    depends_on:
+      db:
+        condition: service_healthy
+      # elasticsearch:
+        # condition: service_healthy
+      # logstash:
+        # condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - '3000:3000'
+    env_file:
+      - environments/.env.dev
+    volumes:
+      - '.:/usr/src/app'
+      - /usr/src/app/node_modules # ignore node_modules from local computer (take into account only inside of docker image)
+    networks:
+      - nmt-share_net
+
+  # Database (postgres)
+  db:
+    image: 'postgres:latest'
+    container_name: nmt-db_container
+    restart: always
+    ports:
+      - '5433:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - environments/.env.dev
+    volumes:
+      - 'nmt-postgres_data:/var/lib/postgresql/data'
+      - './backups:/backups'
+    networks:
+      - nmt-share_net
+
+  # GUI manager for postgres
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: nmt-pgadmin4_container
+  #   restart: always
+  #   ports:
+  #     - '5050:80'
+  #   env_file:
+  #     - environments/.env.dev
+  #   volumes:
+  #     - 'nmt-pgadmin_data:/var/lib/pgadmin'
+  #   networks:
+  #     - nmt-share_net
+
+  # Database for storing logs
+  # elasticsearch:
+  #   image: 'docker.elastic.co/elasticsearch/elasticsearch:8.8.2'
+  #   container_name: nmt-elasticsearch_container
+  #   ports:
+  #     - '9200:9200'
+  #     - '9300:9300'
+  #   healthcheck:
+  #     test: [ "CMD", "curl", "-f", "http://elasticsearch:9200" ]
+  #     interval: 5s
+  #     timeout: 1s
+  #     retries: 20
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - xpack.security.enrollment.enabled=false
+  #   volumes:
+  #     - './docker/elk-config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
+  #     - 'nmt-elasticsearch_data:/usr/share/elasticsearch/data'
+  #   networks:
+  #     - nmt-share_net
+
+  # # Logging transport for Elasticsearch
+  # logstash:
+  #   image: 'docker.elastic.co/logstash/logstash:8.8.2'
+  #   container_name: nmt-logstash_container
+  #   ports:
+  #     - '5000:5000/tcp'
+  #     - '5000:5000/udp'
+  #     - '5044:5044'
+  #     - '9600:9600'
+  #   healthcheck:
+  #     test: [ "CMD", "curl", "-f", "http://logstash:9600" ]
+  #     interval: 5s
+  #     timeout: 1s
+  #     retries: 20
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   environment:
+  #     LS_JAVA_OPTS: '-Xms1g -Xmx1g'
+  #   volumes:
+  #     - './docker/elk-config/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro'
+  #     - './docker/elk-config/logstash/pipeline:/usr/share/logstash/pipeline:ro'
+  #   networks:
+  #     - nmt-share_net
+
+  # GUI manager for Elasticsearch
+  # kibana:
+  #   image: 'docker.elastic.co/kibana/kibana:8.8.2'
+  #   container_name: nmt-kibana_container
+  #   ports:
+  #     - '5601:5601'
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   environment:
+  #     ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+  #     # volumes:
+  #     # Somehow right now it doesn't work (container just doesn't start)
+  #     # - './docker/elk-config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
+  #   networks:
+  #     - nmt-share_net
+
+  # Cache (Redis)
+  redis:
+    image: 'redis:latest'
+    container_name: nmt-redis_container
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'nmt-redis_data:/data'
+    networks:
+      - nmt-share_net
+
+  # GUI manager for Redis
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: nmt-rediscommander_container
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - nmt-share_net
+
+networks:
+  nmt-share_net:
+    driver: bridge
+
+volumes:
+  nmt-postgres_data:
+    driver: local
+  nmt-pgadmin_data:
+    driver: local
+  nmt-elasticsearch_data:
+    driver: local
+  nmt-redis_data:
+    driver: local
