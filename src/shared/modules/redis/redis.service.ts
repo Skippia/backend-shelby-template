@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import Redis from 'ioredis'
 
 import { v4 } from 'uuid'
+import type { Lock } from 'redlock'
 
 import { windValueToArray } from '@shared/helpers/transformers'
 
@@ -10,6 +11,7 @@ import type { CacheProvider } from '../cache/cache.types'
 import { InjectRedis } from './redis.decorators'
 import type { RedisLockOptions, RedisSetOptions, RedisTtlOptions } from './redis.types'
 import { InjectLogger, ILoggerService } from '../logger'
+import { RedLockInstance } from '../redlock'
 
 @Injectable()
 export class RedisService implements CacheProvider {
@@ -20,6 +22,7 @@ export class RedisService implements CacheProvider {
     @InjectLogger(RedisService.name)
     readonly logger: ILoggerService,
     private readonly promiseService: PromiseService,
+    public redLockInstance: RedLockInstance,
   ) {}
 
   public getClient(): Redis {
@@ -211,12 +214,30 @@ export class RedisService implements CacheProvider {
    * @param key
    * @param options
    */
-  public async lock(key: string, options: RedisLockOptions = {}): Promise<void> {
+  public async customLock(key: string, options: RedisLockOptions = {}): Promise<void> {
+    /**
+     * Honestly speaking, i'm not sure in this formulas >_<
+     */
+
+    /**
+     * F.e TTL = 1000ms, delay = 200 ms, then:
+     * - retries = 5
+     * - timeout = 1050 ms
+     */
     options.ttl ??= this.defaultTtl
-    options.timeout ??= this.defaultTtl
-    options.delay ??= 500
+    options.delay ??= 200
+    options.retries ??= Math.ceil((options.timeout || options.ttl) / options.delay)
+    /**
+     * If we don't worry about performance that we can manually increase timeout
+     * It permits to maximize probability to perform each operation which try to get access to locked resource.
+     * (just because we will get more retries and each "transaction" will give a chance to be performed)
+     */
+    options.timeout ??= options.retries * (options.delay + options.ttl * 0.01)
 
     const { ttl, delay, timeout, retries } = options
+
+    // console.table({ ttl, delay, timeout, retries })
+
     const lockKey = `lock:${key}`
     const lockValue = v4()
 
@@ -248,9 +269,20 @@ export class RedisService implements CacheProvider {
    * Removes the pseudo key used by lock.
    * @param key
    */
-  public async unlock(key: string): Promise<void> {
+  public async customUnlock(key: string): Promise<void> {
     this.logger.trace(`[Redis]: UNLOCK ${key}`)
 
     return await this.del(`lock:${key}`)
+  }
+
+  /**
+   * Implements distributed lock strategy based on Redlock
+   * @ttl amount of time in milliseconds that the lock will be held for.
+   * The duration should be long enough to allow the critical section of code
+   * to execute without interruption but short enough to prevent unnecessary blocking
+   * of other clients waiting to acquire the lock.
+   */
+  public async redlockLock(key: string, ttl: number): Promise<Lock> {
+    return await this.redLockInstance.instance.acquire([`lock-${key}`], ttl)
   }
 }

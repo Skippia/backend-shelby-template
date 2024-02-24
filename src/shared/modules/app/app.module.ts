@@ -387,6 +387,10 @@ export class AppModule {
 
     /* ContextModule, LogModule, MemoryModule,  */
     const defaultModules: ModuleMetadata['imports'] = [
+      /**
+       * Always enabled
+       */
+
       /** Config */
       ConfigModule.forRoot({
         isGlobal: true,
@@ -441,9 +445,6 @@ export class AppModule {
         //   ignoreEnvFile: process.env.NODE_ENV === EnvironmentMode.PRODUCTION,
         envFilePath: './environments/.env.test',
       }),
-      /**
-       * Always
-       */
       /** Context module */
       ContextModule,
       /** Promise module */
@@ -469,12 +470,18 @@ export class AppModule {
       defaultModules.push(WinstonLoggerModule.register())
     }
 
+    /**
+     * Should be scrapping metrics (e.g Prometheus)
+     */
     if (disableMetrics) {
       //   defaultModules.push(MetricDisabledModule)
     } else {
       //   defaultModules.push(MetricModule)
     }
 
+    /**
+     * Should be telemtry
+     */
     if (disableTraces) {
       //   defaultModules.push(TraceDisabledModule)
     } else {

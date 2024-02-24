@@ -11,11 +11,12 @@ import type {
 import { RedisService } from './redis.service'
 import { PromiseModule } from '../promise'
 import { getRedisOptionsToken, getRedisConnectionToken, createRedisConnection } from './redis.utils'
+import { RedLockInstance } from '../redlock'
 
 @Module({
   imports: [PromiseModule],
-  providers: [RedisService],
-  exports: [RedisService],
+  providers: [RedisService, RedLockInstance],
+  exports: [RedisService, RedLockInstance],
 })
 /**
  * `RedisService` is wrapper based on ioredis and `PromiseService`

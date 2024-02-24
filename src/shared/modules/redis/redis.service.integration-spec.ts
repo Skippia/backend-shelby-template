@@ -13,7 +13,7 @@ import { RedisService } from './redis.service'
 
 import { redisOptionBuilder } from './redis.utils'
 import type { TEnvironment } from '../app'
-import { Environment, EnvironmentMode, LogSeverity, LoggerTransport } from '../app'
+import { Environment, EnvironmentMode, LogSeverity } from '../app'
 
 import { WinstonLoggerModule } from '../logger'
 
@@ -41,14 +41,7 @@ describe('RedisService', () => {
               )
               .required(),
             // Logger
-            TRANSPORT_LEVEL: Joi.string()
-              .valid(
-                LoggerTransport.LOGSTASH,
-                LoggerTransport.FILE,
-                LoggerTransport.ONLY_CONSOLE,
-                LoggerTransport.NOTHING,
-              )
-              .required(),
+            TRANSPORT_LEVELS: Joi.string().required(),
             SILENT_FILTER_ERRORS: Joi.boolean().required(),
             MAXIMUM_LOG_LEVEL: Joi.string()
               .valid(
@@ -211,7 +204,7 @@ describe('RedisService', () => {
       const lockPromises = [] as Promise<void>[]
 
       for (let i = 0; i < instances; i++) {
-        lockPromises.push(redisService.lock(lockKey, { ttl }))
+        lockPromises.push(redisService.customLock(lockKey, { ttl }))
       }
 
       await Promise.all(lockPromises)
@@ -225,9 +218,9 @@ describe('RedisService', () => {
       const start = Date.now()
       const ttl = 5000
 
-      await redisService.lock(lockKey, { ttl })
-      await redisService.unlock(lockKey)
-      await redisService.lock(lockKey, { ttl })
+      await redisService.customLock(lockKey, { ttl })
+      await redisService.customUnlock(lockKey)
+      await redisService.customLock(lockKey, { ttl })
 
       const elapsed = Date.now() - start
       expect(elapsed).toBeLessThan(ttl)
@@ -238,10 +231,10 @@ describe('RedisService', () => {
       const ttl = 1000
       let exception: boolean
 
-      await redisService.lock(lockKey, { ttl })
+      await redisService.customLock(lockKey, { ttl })
 
       try {
-        await redisService.lock(lockKey, {
+        await redisService.customLock(lockKey, {
           retries: 0,
           delay: ttl * 2,
           ttl,
