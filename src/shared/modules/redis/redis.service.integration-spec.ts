@@ -204,7 +204,7 @@ describe('RedisService', () => {
       const lockPromises = [] as Promise<void>[]
 
       for (let i = 0; i < instances; i++) {
-        lockPromises.push(redisService.customLock(lockKey, { ttl }))
+        lockPromises.push(redisService.customLock(lockKey, { ttl, timeout: 10_000 }))
       }
 
       await Promise.all(lockPromises)

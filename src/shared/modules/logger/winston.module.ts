@@ -4,7 +4,7 @@ import type { LoggerOptions } from 'winston'
 
 import { ConfigService } from '@nestjs/config'
 
-import type { LogSeverity, LoggerTransport } from '@shared/modules/app'
+import type { LogSeverity, TEnvironment } from '@shared/modules/app'
 import { Environment } from '@shared/modules/app'
 
 import { WINSTON_LOGGER_CONFIG_OPTIONS_TOKEN, initializeDefaultOptions } from './winston.config'
@@ -33,13 +33,13 @@ export class WinstonLoggerModule {
           inject: [ConfigService],
           provide: WINSTON_LOGGER_CONFIG_OPTIONS_TOKEN,
           useFactory: (configService: ConfigService): LoggerOptions => {
-            const loggerTransport = configService.get(
-              Environment.TRANSPORT_LEVEL,
-            ) as LoggerTransport
+            const loggerTransports = configService.get(
+              Environment.TRANSPORT_LEVELS,
+            ) as TEnvironment['TRANSPORT_LEVELS']
             const maximumLogLevel = configService.get(Environment.MAXIMUM_LOG_LEVEL) as LogSeverity
 
             const options: LoggerOptions = {
-              ...initializeDefaultOptions(loggerTransport, maximumLogLevel),
+              ...initializeDefaultOptions(loggerTransports, maximumLogLevel),
               ...customOptions,
             }
             return options

@@ -3,7 +3,7 @@
 import { HttpStatus } from '@nestjs/common'
 import type { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface'
 
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 
 import { CACHE_DEFAULT_OPTIONS } from '@shared/modules/cache/cache.config'
 

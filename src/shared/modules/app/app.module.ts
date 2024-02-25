@@ -56,7 +56,7 @@ import type { AppOptions, AppRequest, AppResponse } from './app.types'
 import { APP_DEFAULT_OPTIONS, buildCorsOption } from './app.config'
 import { AppController } from './app.controller'
 import type { TEnvironment } from './app.enum'
-import { Environment, EnvironmentMode, LogSeverity, LoggerTransport } from './app.enum'
+import { Environment, EnvironmentMode, LogSeverity } from './app.enum'
 import { WinstonLoggerModule } from '../logger'
 import { PromiseModule } from '../promise'
 import type { TManualTelemertrySpan } from '../context'
@@ -403,14 +403,7 @@ export class AppModule {
             .required(),
           CORS_WHITELIST: Joi.string().optional(),
           // Logger
-          TRANSPORT_LEVEL: Joi.string()
-            .valid(
-              LoggerTransport.LOGSTASH,
-              LoggerTransport.FILE,
-              LoggerTransport.ONLY_CONSOLE,
-              LoggerTransport.NOTHING,
-            )
-            .required(),
+          TRANSPORT_LEVELS: Joi.string().required(),
           SILENT_FILTER_ERRORS: Joi.boolean().required(),
           MAXIMUM_LOG_LEVEL: Joi.string()
             .valid(

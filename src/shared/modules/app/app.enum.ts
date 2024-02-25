@@ -12,7 +12,7 @@ export enum LogSeverity {
 export enum LoggerTransport {
   'LOGSTASH' = 'LOGSTASH',
   'FILE' = 'FILE',
-  'ONLY_CONSOLE' = 'ONLY_CONSOLE',
+  'CONSOLE' = 'CONSOLE',
   'NOTHING' = 'NOTHING',
 }
 
@@ -30,7 +30,7 @@ export type TEnvironment = {
   DOMAIN: string
   CORS_WHITELIST: string
   // Logger
-  TRANSPORT_LEVEL: LoggerTransport
+  TRANSPORT_LEVELS: string
   SILENT_FILTER_ERRORS: boolean
   MAXIMUM_LOG_LEVEL: LogSeverity
   // Databases
@@ -62,7 +62,7 @@ export const Environment: { [K in keyof TEnvironment]: K } = {
   DOMAIN: 'DOMAIN',
   CORS_WHITELIST: 'CORS_WHITELIST',
   // Logger
-  TRANSPORT_LEVEL: 'TRANSPORT_LEVEL',
+  TRANSPORT_LEVELS: 'TRANSPORT_LEVELS',
   SILENT_FILTER_ERRORS: 'SILENT_FILTER_ERRORS',
   MAXIMUM_LOG_LEVEL: 'MAXIMUM_LOG_LEVEL',
   // Databases
